@@ -19,7 +19,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.coroutines.launch
+import retrofit2.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -120,11 +120,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getLocationWeatherDetails() {
         if (Constants.isNetworkAvailable(this)) {
-            Toast.makeText(
-                this,
-                "You have connected to the internet. Now you can make an API call",
-                Toast.LENGTH_SHORT
-            ).show()
+            val retrofit: Retrofit.Builder = Retrofit.Builder().baseUrl("")
         } else {
             Toast.makeText(
                 this,

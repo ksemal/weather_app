@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="dialog_no_permission">It looks like you have turned off permission required for this feature. It can be enabled under the Applications Settings</string>
+    <string name="dialog_positive_btn">GO TO SETTINGS</string>
+    <string name="dialog_negative_btn">CANCEL</string>
+</resources>

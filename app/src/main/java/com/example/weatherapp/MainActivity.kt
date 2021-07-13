@@ -3,6 +3,7 @@ package com.example.weatherapp
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -27,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var mProgressDialog: Dialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
             mLocationCallback,
             Looper.myLooper()
         )
+        showCustomProgressDialog()
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -137,16 +140,18 @@ class MainActivity : AppCompatActivity() {
                 Constants.METRIC_UNIT,
                 ApiKey.APP_ID
             )
+
             listCall.enqueue(object : Callback<WeatherResponse> {
                 override fun onResponse(
                     call: Call<WeatherResponse>,
                     response: Response<WeatherResponse>
                 ) {
                     if (response.isSuccessful) {
+                        hideCustomProgressDialog()
                         val weatherList: WeatherResponse? = response.body()
                         Log.i("weather response", "$weatherList")
                     } else {
-                        when(response.code()) {
+                        when (response.code()) {
                             400 -> Log.e("Error 400", "Bad Connection")
                             404 -> Log.e("Error 404", "Not found")
                             else -> Log.e("Error", "Generic error")
@@ -155,6 +160,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                    hideCustomProgressDialog()
                     Log.e("error", t.message.toString())
                 }
 
@@ -163,10 +169,21 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(
                 this,
-                "No internet connection availible",
+                "No internet connection available",
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
 
+    private fun showCustomProgressDialog() {
+        mProgressDialog = Dialog(this)
+        mProgressDialog?.setContentView(R.layout.dialog_custom_progress)
+        mProgressDialog?.show()
+    }
+
+    private fun hideCustomProgressDialog() {
+        if (mProgressDialog != null) {
+            mProgressDialog?.dismiss()
+        }
     }
 }

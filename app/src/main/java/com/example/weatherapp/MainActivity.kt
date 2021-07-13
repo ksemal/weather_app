@@ -26,6 +26,8 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -199,12 +201,36 @@ class MainActivity : AppCompatActivity() {
                 response.main.temp.toString(),
                 getUnit(application.resources.configuration.locales.toString())
             )
+            binding.tvSunriseTime.text = unixTime(response.sys.sunrise)
+            binding.tvSunsetTime.text = unixTime(response.sys.sunset)
+            binding.tvHumidity.text = getString(
+                R.string.humidity,
+                response.main.humidity.toString()
+            )
+            binding.tvMin.text = getString(
+                R.string.temp_min,
+                response.main.temp_min.toString()
+            )
+            binding.tvMax.text = getString(
+                R.string.temp_max,
+                response.main.temp_max.toString()
+            )
+            binding.tvSpeed.text = response.wind.speed.toString()
+            binding.tvName.text = response.name
+            binding.tvCountry.text = response.sys.country
         }
     }
 
-    private fun getUnit(value: String): String {
+    private fun getUnit(locale: String): String {
         var value = "°C"
-        if (value == "US" || value == "MM" || value == "LR") value = "°F"
+        if (locale == "US" || locale == "MM" || locale == "LR") value = "°F"
         return value
+    }
+
+    private fun unixTime(timex: Long): String? {
+        val date = Date(timex * 1000L)
+        val sdf = SimpleDateFormat("HH:mm", Locale.UK)
+        sdf.timeZone = TimeZone.getDefault()
+        return sdf.format(date)
     }
 }

@@ -7,4 +7,7 @@
     <string name="image_contentDescription">image</string>
     <string name="miles_per_hour">miles/hour</string>
     <string name="temp">%1$s %2$s</string>
+    <string name="humidity">%1$s per cent</string>
+    <string name="temp_min">%1$s min</string>
+    <string name="temp_max">%1$s max</string>
 </resources>

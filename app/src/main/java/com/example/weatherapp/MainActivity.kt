@@ -15,6 +15,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.models.WeatherResponse
 import com.example.weatherapp.network.WeatherService
 import com.google.android.gms.location.*
@@ -27,11 +28,13 @@ import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mProgressDialog: Dialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         if (!isLocationEnabled()) {
@@ -149,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         hideCustomProgressDialog()
                         val weatherList: WeatherResponse? = response.body()
-                        Log.i("weather response", "$weatherList")
+                        weatherList?.let { setupIU(it) }
                     } else {
                         when (response.code()) {
                             400 -> Log.e("Error 400", "Bad Connection")
@@ -185,5 +188,23 @@ class MainActivity : AppCompatActivity() {
         if (mProgressDialog != null) {
             mProgressDialog?.dismiss()
         }
+    }
+
+    private fun setupIU(response: WeatherResponse) {
+        for (i in response.weather.indices) {
+            binding.tvMain.text = response.weather[i].main
+            binding.tvMainDescription.text = response.weather[i].description
+            binding.tvTemp.text = getString(
+                R.string.temp,
+                response.main.temp.toString(),
+                getUnit(application.resources.configuration.locales.toString())
+            )
+        }
+    }
+
+    private fun getUnit(value: String): String {
+        var value = "°C"
+        if (value == "US" || value == "MM" || value == "LR") value = "°F"
+        return value
     }
 }

@@ -18,6 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/card_view_marginStartEnd"
+        android:layout_marginTop="@dimen/space_medium"
         android:layout_marginEnd="@dimen/card_view_marginStartEnd"
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
@@ -75,6 +76,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/card_view_marginStartEnd"
+        android:layout_marginTop="@dimen/space_medium"
         android:layout_marginEnd="@dimen/card_view_marginStartEnd"
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
@@ -132,6 +134,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/card_view_marginStartEnd"
+        android:layout_marginTop="@dimen/card_view_marginTop"
         android:layout_marginEnd="@dimen/card_view_marginStartEnd"
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
@@ -189,6 +192,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/card_view_marginStartEnd"
+        android:layout_marginTop="@dimen/card_view_marginTop"
         android:layout_marginEnd="@dimen/card_view_marginStartEnd"
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
@@ -337,14 +341,14 @@
 
             <ImageView
                 android:id="@+id/iv_sunset"
-                app:layout_constraintStart_toEndOf="@id/guideline_location"
-                app:layout_constraintTop_toBottomOf="@id/line"
-                android:layout_marginTop="@dimen/space_medium"
                 android:layout_width="@dimen/identification_image_size"
-                android:layout_marginStart="@dimen/identification_image_marginEnd"
                 android:layout_height="@dimen/identification_image_size"
+                android:layout_marginStart="@dimen/identification_image_marginEnd"
+                android:layout_marginTop="@dimen/space_medium"
                 android:layout_marginEnd="@dimen/identification_image_marginEnd"
                 android:contentDescription="@string/image_contentDescription"
+                app:layout_constraintStart_toEndOf="@id/guideline_location"
+                app:layout_constraintTop_toBottomOf="@id/line"
                 app:srcCompat="@drawable/sunset" />
 
             <TextView
@@ -352,10 +356,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/secondary_text_color"
+                android:textSize="@dimen/value_text_size"
                 app:layout_constraintEnd_toEndOf="@id/iv_sunset"
                 app:layout_constraintStart_toStartOf="@id/iv_sunset"
                 app:layout_constraintTop_toBottomOf="@id/iv_sunset"
-                android:textSize="@dimen/value_text_size"
                 tools:text="Sunset" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

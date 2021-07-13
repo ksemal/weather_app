@@ -218,6 +218,15 @@ class MainActivity : AppCompatActivity() {
             binding.tvSpeed.text = response.wind.speed.toString()
             binding.tvName.text = response.name
             binding.tvCountry.text = response.sys.country
+            when (response.weather[i].icon) {
+                "01d" -> binding.ivMain.setImageResource(R.drawable.sunny)
+                "02d", "03d", "04d", "04n", "01n", "02n", "03n", "10n" -> binding.ivMain.setImageResource(
+                    R.drawable.cloud
+                )
+                "10d", "11n" -> binding.ivMain.setImageResource(R.drawable.rain)
+                "11d" -> binding.ivMain.setImageResource(R.drawable.storm)
+                "13d", "13n" -> binding.ivMain.setImageResource(R.drawable.snowflake)
+            }
         }
     }
 

@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weatherapp.databinding.ActivityMainBinding
@@ -76,6 +78,21 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             ).onSameThread().check()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_refresh -> {
+                requestNewLocationData()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

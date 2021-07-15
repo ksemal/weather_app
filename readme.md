@@ -30,8 +30,6 @@ Weather app alows you:
 * Functionality of refresh button - get location weather details for new location after location has changed. Work with FusedLocationProviderClient from Fused Location Provider for Android.
 
 ### Screenshots
-
-#### Create new traval place flow, edit/remove travel place
 ![main screen](img/main_screen.png)
 
 

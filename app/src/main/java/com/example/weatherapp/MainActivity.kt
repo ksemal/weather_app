@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 
         mFusedLocationClient.requestLocationUpdates(
             mLocationRequest,
-            mLocationCallback,
+            MLocationCallback(),
             Looper.myLooper()
         )
         showCustomProgressDialog()
@@ -136,13 +136,6 @@ class MainActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
-    }
-
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val mLastLocation = locationResult.lastLocation
-            getLocationWeatherDetails(mLastLocation.latitude, mLastLocation.longitude)
-        }
     }
 
     private fun getLocationWeatherDetails(latitude: Double, longitude: Double) {
@@ -258,5 +251,13 @@ class MainActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("HH:mm", Locale.UK)
         sdf.timeZone = TimeZone.getDefault()
         return sdf.format(date)
+    }
+
+    private inner class MLocationCallback: LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val mLastLocation = locationResult.lastLocation
+            getLocationWeatherDetails(mLastLocation.latitude, mLastLocation.longitude)
+            mFusedLocationClient.removeLocationUpdates(this)
+        }
     }
 }

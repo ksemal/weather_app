@@ -23,6 +23,7 @@
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
         app:cardElevation="@dimen/card_view_elevation"
+        app:layout_constraintBottom_toBottomOf="@id/first_barrier"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -66,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_main"
                 app:layout_constraintTop_toBottomOf="@id/tv_main"
-                tools:text="condition" />
+                tools:text="weather condition" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -74,13 +75,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_temp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/card_view_marginStartEnd"
         android:layout_marginTop="@dimen/space_medium"
         android:layout_marginEnd="@dimen/card_view_marginStartEnd"
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
         app:cardElevation="@dimen/card_view_elevation"
+        app:layout_constraintBottom_toBottomOf="@id/first_barrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent">
@@ -129,6 +131,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/first_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="cv_temp,cv_weather" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_min_max"
         android:layout_width="0dp"
@@ -139,6 +148,7 @@
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
         app:cardElevation="@dimen/card_view_elevation"
+        app:layout_constraintBottom_toBottomOf="@id/second_barrier"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cv_weather">
@@ -190,13 +200,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_wind"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/card_view_marginStartEnd"
         android:layout_marginTop="@dimen/card_view_marginTop"
         android:layout_marginEnd="@dimen/card_view_marginStartEnd"
         android:background="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
         app:cardElevation="@dimen/card_view_elevation"
+        app:layout_constraintBottom_toBottomOf="@id/second_barrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/cv_temp">
@@ -244,6 +255,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/second_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="cv_wind,cv_min_max" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_location"

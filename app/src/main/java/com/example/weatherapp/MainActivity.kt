@@ -174,9 +174,7 @@ class MainActivity : AppCompatActivity() {
 
                         // save response to shared preferences
                         val weatherResponseJsonString = Gson().toJson(weatherList)
-                        mSharedPreferences.edit().apply {
-                            putString(Constants.WEATHER_RESPONSE_DATA, weatherResponseJsonString)
-                        }.apply()
+                        mSharedPreferences.edit().putString(Constants.WEATHER_RESPONSE_DATA, weatherResponseJsonString).apply()
 
                         // populate UI with data
                         setupIU()

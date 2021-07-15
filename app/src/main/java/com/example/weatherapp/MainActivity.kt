@@ -7,6 +7,7 @@ import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
@@ -21,6 +22,7 @@ import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.models.WeatherResponse
 import com.example.weatherapp.network.WeatherService
 import com.google.android.gms.location.*
+import com.google.gson.Gson
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -35,11 +37,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mProgressDialog: Dialog? = null
+    private lateinit var mSharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mSharedPreferences = getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE)
+
+        // get data from shared preferences and then make a call to weather API to get up to date data
+        setupIU()
 
         if (!isLocationEnabled()) {
             Toast.makeText(
@@ -87,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.action_refresh -> {
                 requestNewLocationData()
                 true
@@ -164,7 +171,15 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         hideCustomProgressDialog()
                         val weatherList: WeatherResponse? = response.body()
-                        weatherList?.let { setupIU(it) }
+
+                        // save response to shared preferences
+                        val weatherResponseJsonString = Gson().toJson(weatherList)
+                        mSharedPreferences.edit().apply {
+                            putString(Constants.WEATHER_RESPONSE_DATA, weatherResponseJsonString)
+                        }.apply()
+
+                        // populate UI with data
+                        setupIU()
                     } else {
                         when (response.code()) {
                             400 -> Log.e("Error 400", "Bad Connection")
@@ -202,40 +217,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupIU(response: WeatherResponse) {
-        for (i in response.weather.indices) {
-            binding.tvMain.text = response.weather[i].main
-            binding.tvMainDescription.text = response.weather[i].description
-            binding.tvTemp.text = getString(
-                R.string.temp,
-                response.main.temp.toString(),
-                getUnit(application.resources.configuration.locales.toString())
-            )
-            binding.tvSunriseTime.text = unixTime(response.sys.sunrise)
-            binding.tvSunsetTime.text = unixTime(response.sys.sunset)
-            binding.tvHumidity.text = getString(
-                R.string.humidity,
-                response.main.humidity.toString()
-            )
-            binding.tvMin.text = getString(
-                R.string.temp_min,
-                response.main.temp_min.toString()
-            )
-            binding.tvMax.text = getString(
-                R.string.temp_max,
-                response.main.temp_max.toString()
-            )
-            binding.tvSpeed.text = response.wind.speed.toString()
-            binding.tvName.text = response.name
-            binding.tvCountry.text = response.sys.country
-            when (response.weather[i].icon) {
-                "01d" -> binding.ivMain.setImageResource(R.drawable.sunny)
-                "02d", "03d", "04d", "04n", "01n", "02n", "03n", "10n" -> binding.ivMain.setImageResource(
-                    R.drawable.cloud
+    private fun setupIU() {
+
+        val weatherResponseJsonString =
+            mSharedPreferences.getString(Constants.WEATHER_RESPONSE_DATA, Constants.DEFAULT_VALUE)
+        if (!weatherResponseJsonString.isNullOrEmpty()) {
+            val response = Gson().fromJson(weatherResponseJsonString, WeatherResponse::class.java)
+            for (i in response.weather.indices) {
+                binding.tvMain.text = response.weather[i].main
+                binding.tvMainDescription.text = response.weather[i].description
+                binding.tvTemp.text = getString(
+                    R.string.temp,
+                    response.main.temp.toString(),
+                    getUnit(application.resources.configuration.locales.toString())
                 )
-                "10d", "11n" -> binding.ivMain.setImageResource(R.drawable.rain)
-                "11d" -> binding.ivMain.setImageResource(R.drawable.storm)
-                "13d", "13n" -> binding.ivMain.setImageResource(R.drawable.snowflake)
+                binding.tvSunriseTime.text = unixTime(response.sys.sunrise)
+                binding.tvSunsetTime.text = unixTime(response.sys.sunset)
+                binding.tvHumidity.text = getString(
+                    R.string.humidity,
+                    response.main.humidity.toString()
+                )
+                binding.tvMin.text = getString(
+                    R.string.temp_min,
+                    response.main.temp_min.toString()
+                )
+                binding.tvMax.text = getString(
+                    R.string.temp_max,
+                    response.main.temp_max.toString()
+                )
+                binding.tvSpeed.text = response.wind.speed.toString()
+                binding.tvName.text = response.name
+                binding.tvCountry.text = response.sys.country
+                when (response.weather[i].icon) {
+                    "01d" -> binding.ivMain.setImageResource(R.drawable.sunny)
+                    "02d", "03d", "04d", "04n", "01n", "02n", "03n", "10n" -> binding.ivMain.setImageResource(
+                        R.drawable.cloud
+                    )
+                    "10d", "11n" -> binding.ivMain.setImageResource(R.drawable.rain)
+                    "11d" -> binding.ivMain.setImageResource(R.drawable.storm)
+                    "13d", "13n" -> binding.ivMain.setImageResource(R.drawable.snowflake)
+                }
             }
         }
     }
@@ -253,7 +274,7 @@ class MainActivity : AppCompatActivity() {
         return sdf.format(date)
     }
 
-    private inner class MLocationCallback: LocationCallback() {
+    private inner class MLocationCallback : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation = locationResult.lastLocation
             getLocationWeatherDetails(mLastLocation.latitude, mLastLocation.longitude)

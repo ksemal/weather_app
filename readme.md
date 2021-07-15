@@ -30,6 +30,7 @@ Weather app alows you:
 * Functionality of refresh button - get location weather details for new location after location has changed. Work with FusedLocationProviderClient from Fused Location Provider for Android.
 
 ### Screenshots
-![main screen](img/main_screen.png)
+#### Main UI
+<img src="img/main_screen.png" alt="main UI" width="300"/>
 
 
